@@ -90,7 +90,7 @@
             justify-content: center;
             gap: 40px;
             flex-wrap: wrap;
-            padding: 50px 20px;
+            padding: 50px 50px;
             max-width: 1000px;
             margin: auto;
         }
@@ -113,10 +113,12 @@
         }
         .folder.open {
             transform: scale(1.1);
+            width: 100%;
+            margin-bottom: 20px;
         }
         .projects {
             display: none;
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(1, 1fr);
             gap: 20px;
             margin-top: 20px;
             border: 2px solid #00ff00;
