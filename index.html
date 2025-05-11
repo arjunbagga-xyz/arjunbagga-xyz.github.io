@@ -376,7 +376,7 @@
         });
 
         // Terminal functionality
-        const API_KEY = "AIzaSyDatwSprfQCDlYh5AMqiRWZxqJqLIXKJWo"; // Replace with your Gemini API key
+        const API_KEY = window.GEMINI_API_KEY || "";
         const terminalOutput = document.getElementById("terminal-output");
         const terminalInput = document.getElementById("terminal-input");
         const terminal = document.getElementById("terminal");
