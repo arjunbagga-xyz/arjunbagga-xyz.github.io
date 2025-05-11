@@ -448,7 +448,7 @@
         });
 
         async function getGeminiResponse(message) {
-            const response = await fetch('/.netlify/functions/gemini', {
+            const response = await fetch('/.netlify/functions/api', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message, chatHistory })
