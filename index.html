@@ -388,7 +388,8 @@
             }
         ];
 
-        terminal.addEventListener("click", () => {
+        terminal.addEventListener("click", (e) => {
+            console.log("Terminal clicked, target:", e.target);
             terminalInput.focus();
         });
 
