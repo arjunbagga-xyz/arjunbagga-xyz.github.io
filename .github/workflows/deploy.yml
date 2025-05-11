@@ -11,9 +11,13 @@ jobs:
         
       - name: Inject API Key
         run: |
-          sed -i "s|const API_KEY = window.GEMINI_API_KEY || \"\"|const API_KEY = \"${{ secrets.GEMINI_API_KEY }}\"|g" index.html
+          sed -i 's/const API_KEY = window.GEMINI_API_KEY || ""/const API_KEY = "${{ secrets.GEMINI_API_KEY }}"/g' index.html
           
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: .
+
+      - name: Verify Replacement
+        run: |
+          grep "API_KEY" index.html
