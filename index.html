@@ -389,20 +389,12 @@
         ];
 
         content.addEventListener("click", (e) => {
-           console.log("Content clicked, target:", e.target);
             if (e.target === content) {
                 terminalInput.focus();
            }
         });
 
-        window.addEventListener("scroll", () => {
-            let scrollY = window.scrollY;
-            let terminalContainer = document.getElementById("terminal-container");
-            if (scrollY < 400 && terminalContainer.style.display === "flex") {
-                terminalInput.focus();
-            }
-        });
-
+        
         terminalInput.addEventListener("keydown", async (event) => {
             if (event.key === "Enter") {
                 const message = terminalInput.value.trim();
