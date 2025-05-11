@@ -388,9 +388,11 @@
             }
         ];
 
-        terminal.addEventListener("click", (e) => {
-            console.log("Terminal clicked, target:", e.target);
-            terminalInput.focus();
+        content.addEventListener("click", (e) => {
+           console.log("Content clicked, target:", e.target);
+            if (e.target === content) {
+                terminalInput.focus();
+           }
         });
 
         window.addEventListener("scroll", () => {
