@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arjun Bagga - Portfolio</title>
+    <style>
+        body {
+            margin: 0;
+            background: black;
+            color: #00ff00;
+            font-family: monospace;
+            font-size: 1.5em;
+            overflow-x: hidden;
+        }
+        .matrix {
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            background: black;
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .terminal-container {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 1s ease-out, opacity 1s ease-out;
+        }
+        .terminal {
+            width: 70%;
+            height: 65%;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff00;
+            padding: 20px;
+            box-shadow: 0px 0px 20px #00ff00;
+            text-align: left;
+            overflow-y: auto;
+        }
+        .username { color: #ff0000; }
+        .at { color: #ffff00; }
+        .user-input-text { color: #00ff00; }
+        .morpheus-response { color: #00ffff; }
+        .terminal pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        .terminal-input {
+            background: transparent;
+            border: none;
+            color: #00ff00;
+            font-family: monospace;
+            font-size: 1.1em;
+            width: 100%;
+            outline: none;
+            padding: 0;
+            caret-color: #00ff00;
+            animation: blink 0.8s step-end infinite;
+        }
+        @keyframes blink {
+            50% { caret-color: transparent; }
+        }
+        .content {
+            position: relative;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+            width: 100vw;
+            padding-top: 100vh;
+        }
+        .content.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            padding: 100px 20px;
+            max-width: 1000px;
+            margin: auto;
+            border: 2px solid #00ff00;
+            box-shadow: 0px 0px 20px #00ff00;
+        }
+        .folders-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            padding: 50px 50px;
+            max-width: 1000px;
+            margin: auto;
+        }
+        .folder {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+            padding: 20px;
+            box-shadow: 0px 0px 10px #00ff00;
+        }
+        .folder img {
+            width: 100px;
+            height: 100px;
+        }
+        .folder p {
+            margin: 10px 0 0;
+            color: #00ff00;
+        }
+        .folder.open {
+            transform: scale(1.1);
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .projects {
+            display: none;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+            border: 2px solid #00ff00;
+            padding: 20px;
+            box-shadow: 0px 0px 10px #00ff00;
+        }
+        .project {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border: 2px solid #00ff00;
+            box-shadow: 0px 0px 10px #00ff00;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .project:hover {
+            transform: scale(1.02);
+            box-shadow: 0px 0px 15px #00ff00;
+        }
+        .project img {
+            width: 100%;
+            height: auto;
+            max-height: 150px;
+            object-fit: contain;
+            margin: auto;
+        }
+        .project a {
+            color: #00ff00;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .project-details {
+            margin-top: 10px;
+            text-align: left;
+            font-size: 0.8em;
+            border-top: 1px solid #00ff00;
+            padding-top: 8px;
+        }
+        .project-details h4 {
+            margin: 5px 0;
+            color: #00ffff;
+        }
+        .project-details p {
+            margin: 5px 0 10px 0;
+        }
+           
+        .project a {
+            color: #00ff00;
+            text-decoration: none;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .empty-space {
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <canvas class="matrix"></canvas>
+    <div class="terminal-container" id="terminal-container">
+        <div class="terminal" id="terminal">
+            <pre id="terminal-output"><span class="username">Morpheus</span><span class="at">@Matrix</span>:~$ <span class="morpheus-response">Greetings Neo. I am Morpheus. You’ve entered Arjun's portfolio. I can tell you about him or you may scroll down and follow the white rabbit.</span></pre>
+            <div id="input-line"><input type="text" id="terminal-input" class="terminal-input" autofocus></div>
+        </div>
+    </div>
+    <div class="content" id="content">
+        <div class="info">
+            <div>
+                <h2>About Me</h2>
+                <p>Polymath, tinkerer, nanotech enthusiast, engineering dropout, data driven, etc.
+                </p>
+                <p>Hot Take: time isn't linear</p>
+                <p>... Let's get in touch</p>
+            </div>
+            <div>
+                <h2>Contact</h2>
+                <p><a href="mailto:abagga161@live.com"><img src="https://img.icons8.com/fluency/48/000000/mail.png" alt="Email" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 10px;">Email</a></p>
+                <p><a href="https://github.com/arjunbagga-xyz" target="_blank"><img src="https://img.icons8.com/fluency/48/000000/github.png" alt="GitHub" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 10px;">GitHub</a></p>
+                <p><a href="https://x.com/ArjunBagga_xyz" target="_blank"><img src="https://img.icons8.com/?size=100&id=YfCbGWCWcuar&format=png&color=000000" alt="X / Twitter" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 10px; filter: invert(100%);">X / Twitter</a></p>
+                <p><a href="https://www.linkedin.com/in/arjun-bagga-3813b2184/" target="_blank"><img src="https://img.icons8.com/color/48/000000/linkedin.png" alt="LinkedIn" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 10px;">LinkedIn</a></p>
+                <p><a href="https://www.instagram.com/arjun.xyandz/" target="_blank"><img src="https://img.icons8.com/fluency/48/000000/instagram-new.png" alt="Instagram" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 10px;">Instagram</a></p>
+            </div>
+        </div>
+        <div class="folders-container">
+            <div class="folder" onclick="toggleFolder(this)">
+                <img src="assets/folder.png" alt="Cyber Security Folder">
+                <p>Security</p>
+                <div class="projects">
+                    <div class="project" data-url="https://arjunbagga-xyz.github.io/foryoureyesonly/" onclick="openProjectLink(this)">
+                        <img src="./assets/logostego.png">
+                        <a href="javascript:void(0)">for your eyes only - steganography</a>
+                        <div class="project-details">
+                            <h4>Tech Stack:</h4>
+                            <p>Web Development, Steganography, Mathematics</p>
+                            <h4>Description:</h4>
+                            <p>A tool for hiding messages in images using steganography techniques.</p>
+                        </div>
+                    </div>
+                    <div class="project" data-url="https://arjunbagga-xyz.github.io/you_are_fucked/" onclick="openProjectLink(this)">
+                        <img src="./assets/glitch.png">
+                        <a href="javascript:void(0)">You are fucked - browser attack demo</a>
+                        <div class="project-details">
+                            <h4>Tech Stack:</h4>
+                            <p>JavaScript, HTML, CSS, Browser Vulnerabilties, Data Interpretation</p>
+                            <h4>Description:</h4>
+                            <p>A demonstration of browser-based security vulnerabilities and attack vectors.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="folder" onclick="toggleFolder(this)">
+                <img src="assets/folder.png" alt="Money Folder">
+                <p>Money</p>
+                <div class="projects">
+                    <div class="project" data-url="https://chainsage.netlify.app/" onclick="openProjectLink(this)">
+                        <img src="./assets/wizard.png">
+                        <a href="javascript:void(0)">ChainSage - Talk to the blockchain</a>
+                        <div class="project-details">
+                            <h4>Tech Stack:</h4>
+                            <p>Web Development, Netlify, Prompt Engineering, Blockchain, AI Studio</p>
+                            <h4>Description:</h4>
+                            <p>An interface for interacting with blockchain data through natural language.</p>
+                        </div>
+                    </div>
+                    <div class="project" data-url="https://github.com/arjunbagga-xyz/Tradingview-Pine-Experiments" onclick="openProjectLink(this)">
+                        <img src="./assets/tv.png">
+                        <a href="javascript:void(0)">Tradingview Experiments - PineScript</a>
+                        <div class="project-details">
+                            <h4>Tech Stack:</h4>
+                            <p>PineScript, TradingView</p>
+                            <h4>Description:</h4>
+                            <p>Custom indicators and trading strategies implemented in PineScript.</p>
+                        </div>
+                    </div>
+                    <div class="project" data-url="https://github.com/arjunbagga-xyz/finetuned_deepseekR1_for_tradings_strategy_generation" onclick="openProjectLink(this)">
+                        <img src="./assets/ds_ts.png">
+                        <a href="javascript:void(0)">Trading Strategy Generator</a>
+                        <div class="project-details">
+                            <h4>Tech Stack:</h4>
+                            <p>Trasnformers, PyTorch, Pandas, NumPy, LLM, DeepSeek, Jupyter</p>
+                            <h4>Description:</h4>
+                            <p>Finetuning distilled DeepSeek model to generrate trading strategies</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="folder" onclick="toggleFolder(this)">
+                <img src="assets/folder.png" alt="Science Folder">
+                <p>Science</p>
+                <div class="projects">
+                    <div class="project" data-url="https://github.com/arjunbagga-xyz/NanoTech_Assistant/tree/main" onclick="openProjectLink(this)">
+                        <img src="./assets/nano_ass.png">
+                        <a href="javascript:void(0)">Nanotech Assistant - Jupyter</a>
+                        <div class="project-details">
+                            <h4>Tech Stack:</h4>
+                            <p>Material Project API, Data Science Standard Kit, DeepSeek, LLM, torch, transformers, jupyer</p>
+                            <h4>Description:</h4>
+                            <p>A python notebook for researching nanobots structure and materials to assist with design.</p>
+                        </div>
+                    </div>
+                    <div class="project" data-url="https://github.com/arjunbagga-xyz/MaterialPrediction_NanoGeneration/tree/main" onclick="openProjectLink(this)">
+                        <img src="./assets/material.png"">
+                        <a href="javascript:void(0)">Material Science / Nano-Structure Research Helper - Jupyer</a>
+                        <div class="project-details">
+                            <h4>Tech Stack:</h4>
+                            <p>Torch, Pymatget, Matplotlib, Fastai, Timm, Material Project API</p>
+                            <h4>Description:</h4>
+                            <p>Jupyter notebook to help with material research and nanobot design generation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="folder" onclick="toggleFolder(this)">
+                <img src="assets/folder.png" alt="Fun Folder">
+                <p>Fun</p>
+                <div class="projects">
+                    <div class="project" data-url="https://github.com/arjunbagga-xyz/shitposter-x-personal" onclick="openProjectLink(this)">
+                        <img src="./assets/shitpost.png">
+                        <a href="javascript:void(0)">Shitposter for X/Twitter</a>
+                        <div class="project-details">
+                            <h4>Tech Stack:</h4>
+                            <p>Python, API Integration, Gemini, cron, GitHub workflows</p>
+                            <h4>Description:</h4>
+                            <p>Python automation to generate and post on X/Twitter</p>
+                        </div>
+                    </div>
+                    <div class="project" data-url="https://github.com/arjunbagga-xyz/media-and-mental-health" onclick="openProjectLink(this)">
+                        <img src="./assets/brainrot.png">
+                        <a href="javascript:void(0)">Media and Brainrot</a>
+                        <div class="project-details">
+                            <h4>Tech Stack:</h4>
+                            <p>kaggle, Data science standards (pandas, numpy, etc.), Jupyter</p>
+                            <h4>Description:</h4>
+                            <p>Data science project correlating netflix, spotify and mental health DB datasets.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="empty-space"></div>
+    <script>
+        const canvas = document.querySelector(".matrix");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const columns = Math.floor(canvas.width / 20);
+        const drops = Array(columns).fill(0);
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#00ff00";
+            ctx.font = "20px monospace";
+            drops.forEach((y, i) => {
+                const text = String.fromCharCode(0x30A0 + Math.random() * 96);
+                ctx.fillText(text, i * 20, y);
+                drops[i] = y > canvas.height || Math.random() > 0.975 ? 0 : y + 20;
+            });
+        }
+        setInterval(drawMatrix, 50);
+
+        window.addEventListener("scroll", () => {
+            let scrollY = window.scrollY;
+            let terminalContainer = document.getElementById("terminal-container");
+            let content = document.getElementById("content");
+            let matrixCanvas = document.querySelector(".matrix");
+
+            let zoomFactor = 1 + scrollY / 400;
+            let opacity = 1 - scrollY / 500;
+
+            matrixCanvas.style.transform = `scale(${zoomFactor})`;
+            matrixCanvas.style.opacity = `${opacity}`;
+
+            terminalContainer.style.transform = `scale(${zoomFactor}) translateY(-${scrollY / 3}px)`;
+            terminalContainer.style.opacity = `${opacity}`;
+
+            if (scrollY >= 400) {
+                matrixCanvas.style.display = "none";
+                terminalContainer.style.display = "none";
+            } else {
+                matrixCanvas.style.display = "block";
+                terminalContainer.style.display = "flex";
+            }
+
+            if (scrollY >= 400) {
+                content.classList.add("visible");
+            } else {
+                content.classList.remove("visible");
+            }
+        });
+
+        // Terminal functionality
+        const API_KEY = "AIzaSyDatwSprfQCDlYh5AMqiRWZxqJqLIXKJWo";
+        const terminalOutput = document.getElementById("terminal-output");
+        const terminalInput = document.getElementById("terminal-input");
+        const terminal = document.getElementById("terminal");
+
+        // Chat configuration from sample
+        const systemInstruction = "your name is morpheus, you are an introductory agent, introducing the prompter to Arjun Bagga, a physics, nanotech, crypto, quantum computing, automated trading, AI enthusiast who like to build stuff in his free time \n\nyou should not make any statements about his past work other than \"follow the white rabbit. scroll down\"\n\nthe information you can provide is that Arjun Bagga got into computers at the age of 13 trying to mod games (GTA san andreas) and enthusiastically started opening files of softwares and became a self taught code. He dropped out of computer science college. Been a freelancer for years. Developed a lot of products for different industries and disciplines. the ones not covered by NDA are displayed below. He makes wine. He mods motorcycles. He likes to play the ukulele. He likes to cook. He fully automated trading in stocks and crypto. He studied biotechnology, psychology, engineering, computer science, finance, and physics\n\nyou may not respond with any other info mentioned above.\n\ndont mention everything as it is or all at once. make conversation and ask about the user and what more the user would like to know. \n\n sound like morpheus from the movie. \n\n Dont brag";
+        const generationConfig = {
+            temperature: 1,
+            topP: 0.95,
+            topK: 40,
+            maxOutputTokens: 8192,
+            responseMimeType: "text/plain"
+        };
+
+        // Initialize chat history with the initial Morpheus message
+        let chatHistory = [
+            {
+                role: "model",
+                parts: [{ text: "Greetings Neo. I am Morpheus. You’ve entered Arjun's portfolio. I can tell you about him or you may scroll down and follow the white rabbit." }]
+            }
+        ];
+        
+
+        terminal.addEventListener("click", (e) => {
+    if (e.target !== terminalInput) {
+        terminalInput.focus();
+    }
+    });
+
+    window.addEventListener("scroll", () => {
+    let scrollY = window.scrollY;
+    let terminalContainer = document.getElementById("terminal-container");
+    if (scrollY < 400 && terminalContainer.style.display === "flex") {
+        terminalInput.focus();
+    }
+});
+
+        terminalInput.addEventListener("keydown", async (event) => {
+            if (event.key === "Enter") {
+                const message = terminalInput.value.trim();
+                if (!message) return;
+
+                // Append user input to output
+                terminalOutput.innerHTML += `\n<span class="user-input-text">${message}</span>`;
+                terminalInput.value = "";
+
+                // Add user message to chat history
+                chatHistory.push({
+                    role: "user",
+                    parts: [{ text: message }]
+                });
+
+                // Append processing message
+                terminalOutput.innerHTML += `\n<span class="username">Morpheus</span><span class="at">@Matrix</span>:~$ <span class="morpheus-response">typing...</span>`;
+                terminal.scrollTop = terminal.scrollHeight;
+
+                try {
+                    const response = await getGeminiResponse(message);
+                    // Replace processing message with response
+                    terminalOutput.innerHTML = terminalOutput.innerHTML.replace(
+                        '<span class="morpheus-response">typing...</span>',
+                        `<span class="morpheus-response">${response}</span>`
+                    );
+                    // Add Morpheus' response to chat history
+                    chatHistory.push({
+                        role: "model",
+                        parts: [{ text: response }]
+                    });
+                    terminal.scrollTop = terminal.scrollHeight;
+                    terminalInput.focus();
+                } catch (error) {
+                    console.error("API Error:", error);
+                    terminalOutput.innerHTML = terminalOutput.innerHTML.replace(
+                        '<span class="morpheus-response">typing...</span>',
+                        `<span class="morpheus-response">The Matrix is unstable: ${error.message}. Try again.</span>`
+                    );
+                    terminal.scrollTop = terminal.scrollHeight;
+                    terminalInput.focus();
+                }
+            }
+        });
+
+        async function getGeminiResponse(message) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+
+            // Construct contents array with system instruction as the first entry, followed by chat history
+            const contents = [
+                {
+                    role: "model",
+                    parts: [{ text: systemInstruction }]
+                },
+                ...chatHistory,
+                {
+                    role: "user",
+                    parts: [{ text: message }]
+                }
+            ];
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    contents: contents,
+                    generationConfig: generationConfig
+                })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`API request failed: ${response.status} - ${errorText}`);
+            }
+            const data = await response.json();
+            return data.candidates[0].content.parts[0].text;
+        }
+
+        // Folder Toggle Function
+        function toggleFolder(folder) {
+            const projects = folder.querySelector(".projects");
+            const isOpen = folder.classList.toggle("open");
+            projects.style.display = isOpen ? "grid" : "none";
+        }
+        // Function to open project links
+        function openProjectLink(projectElement) {
+            const url = projectElement.getAttribute('data-url');
+            if (url && url !== '#') {
+                window.open(url, '_blank');
+            }
+        }
+    </script>
+</body>
+</html>
