@@ -1,0 +1,3 @@
+[build]
+  publish = "."  # Directory containing index.html and assets
+  functions = "netlify/functions"  # Directory for serverless functions
