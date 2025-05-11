@@ -389,7 +389,7 @@
         ];
 
         terminal.addEventListener("click", (e) => {
-            if (e.target !== terminalInput) {
+            if (e.target === terminalInput) {
                 terminalInput.focus();
             }
         });
