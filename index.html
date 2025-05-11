@@ -388,10 +388,8 @@
             }
         ];
 
-        terminal.addEventListener("click", (e) => {
-            if (terminal.contains(e.target)) {
-                terminalInput.focus();
-            }
+        terminal.addEventListener("click", () => {
+            terminalInput.focus();
         });
 
         window.addEventListener("scroll", () => {
